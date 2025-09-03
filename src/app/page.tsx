@@ -19,6 +19,8 @@ interface SearchResponse {
 }
 
 export default function Home() {
+  const SEARCH_PLACEHOLDER = "Search for cards (e.g., 'lightning bolt', 'island', 'color:U')";
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<CardData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -99,7 +101,7 @@ export default function Home() {
                   value={searchQuery}
                   onChange={handleInputChange}
                   onKeyPress={handleKeyPress}
-                  placeholder="Search for cards (e.g., 'lightning bolt', 'island', 'creature:goblin')"
+                  placeholder={SEARCH_PLACEHOLDER}
                   className="w-full px-8 py-6 text-2xl border-3 border-gray-300 rounded-full shadow-xl focus:outline-none focus:border-blue-500 focus:ring-6 focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-900"
                 />
               </div>
@@ -147,7 +149,7 @@ export default function Home() {
                 value={searchQuery}
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
-                placeholder="Search for cards (e.g., 'lightning bolt', 'island', 'creature:goblin')"
+                                  placeholder={SEARCH_PLACEHOLDER}
                 className="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-full shadow-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-900"
               />
             </div>
