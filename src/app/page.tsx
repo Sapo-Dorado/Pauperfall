@@ -127,7 +127,7 @@ export default function Home() {
                 )}
               </button>
             </div>
-            <div className="max-w-5xl mx-auto mt-4 text-center text-gray-600 dark:text-gray-400">
+            <div className="max-w-5xl mx-auto mt-4 text-center text-gray-600 dark:text-gray-400 select-none">
               Search for Pauper legal cards using Scryfall syntax, sorted by <span className="font-semibold">Pauper</span>larity
             </div>
           </div>
