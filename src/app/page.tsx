@@ -77,6 +77,13 @@ export default function Home() {
     handleSearch(searchQuery);
   };
 
+  const handleHomeClick = () => {
+    setSearchQuery('');
+    setSearchResults([]);
+    setError('');
+    setHasSearched(false);
+  };
+
   // Initial search state (no results yet)
   if (!hasSearched) {
     return (
@@ -132,9 +139,12 @@ export default function Home() {
       <div className="container mx-auto px-4 py-16">
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-800 dark:text-white mb-4">
+          <button
+            onClick={handleHomeClick}
+            className="text-5xl font-bold text-gray-800 dark:text-white mb-4 cursor-pointer"
+          >
             Pauperfall
-          </h1>
+          </button>
           <p className="text-xl text-gray-600 dark:text-gray-300">
             Search Magic: The Gathering cards
           </p>
