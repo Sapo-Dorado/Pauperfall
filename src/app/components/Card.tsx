@@ -20,7 +20,7 @@ export default function Card({ card }: CardProps) {
         <img
           src={image_uris.small}
           alt={name}
-          className="w-full h-48 object-cover"
+          className="w-full aspect-[2.5/3.5] object-cover"
         />
       )}
       <div className="p-4">
