@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Pauperfall - Magic: The Gathering Card Search",
-  description: "Search Magic: The Gathering cards using the Scryfall API",
+  title: "Pauperfall - Magic: The Gathering Pauper Card Search",
+  description: "Search Magic: The Gathering Pauper cards using the Scryfall API",
 };
 
 export default function RootLayout({
