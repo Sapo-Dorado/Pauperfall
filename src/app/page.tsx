@@ -58,15 +58,17 @@ export default function Home() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-    
-    // Debounce the search to avoid too many API calls
-    const timeoutId = setTimeout(() => {
-      handleSearch(value);
-    }, 300);
+    setSearchQuery(e.target.value);
+  };
 
-    return () => clearTimeout(timeoutId);
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch(searchQuery);
+    }
+  };
+
+  const handleSearchClick = () => {
+    handleSearch(searchQuery);
   };
 
   return (
@@ -84,19 +86,31 @@ export default function Home() {
 
         {/* Search Bar */}
         <div className="max-w-2xl mx-auto mb-16">
-          <div className="relative">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleInputChange}
-              placeholder="Search for cards (e.g., 'lightning bolt', 'island', 'creature:goblin')"
-              className="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-full shadow-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-900"
-            />
-            {isLoading && (
-              <div className="absolute right-6 top-1/2 transform -translate-y-1/2">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
-              </div>
-            )}
+          <div className="flex gap-4">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleInputChange}
+                onKeyPress={handleKeyPress}
+                placeholder="Search for cards (e.g., 'lightning bolt', 'island', 'creature:goblin')"
+                className="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-full shadow-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-900"
+              />
+            </div>
+            <button
+              onClick={handleSearchClick}
+              disabled={isLoading || !searchQuery.trim()}
+              className="px-8 py-4 bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 dark:bg-blue-500 dark:hover:bg-blue-600"
+            >
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <span>Searching...</span>
+                </div>
+              ) : (
+                'Search'
+              )}
+            </button>
           </div>
         </div>
 
