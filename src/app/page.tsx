@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Card from './components/Card';
 import { searchCards, type CardData } from './lib/search';
 
@@ -8,23 +9,42 @@ export default function Home() {
   const SEARCH_PLACEHOLDER = "Search for cards (e.g., 'lightning bolt', 'island', 'color:U')";
   const SUBTITLE = "Search Magic: The Gathering Pauper cards";
   
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<CardData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
 
+  // Check for search query in URL on component mount
+  useEffect(() => {
+    const urlQuery = searchParams.get('q');
+    if (urlQuery) {
+      setSearchQuery(urlQuery);
+      handleSearch(urlQuery);
+    }
+  }, [searchParams]);
+
   const handleSearch = async (query: string) => {
     if (!query.trim()) {
       setSearchResults([]);
       setError('');
       setHasSearched(false);
+      // Clear URL when search is empty
+      router.push('/');
       return;
     }
 
     setIsLoading(true);
     setError('');
     setHasSearched(true);
+
+    // Update URL with search query
+    const url = new URL(window.location.href);
+    url.searchParams.set('q', query);
+    router.push(url.pathname + url.search);
 
     const result = await searchCards(query);
     
@@ -60,6 +80,8 @@ export default function Home() {
     setSearchResults([]);
     setError('');
     setHasSearched(false);
+    // Clear URL when going home
+    router.push('/');
   };
 
   // Initial search state (no results yet)
