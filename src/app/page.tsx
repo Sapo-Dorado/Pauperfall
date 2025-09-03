@@ -22,16 +22,19 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState<Card[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearch = async (query: string) => {
     if (!query.trim()) {
       setSearchResults([]);
       setError('');
+      setHasSearched(false);
       return;
     }
 
     setIsLoading(true);
     setError('');
+    setHasSearched(true);
 
     try {
       const response = await fetch(`https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}`);
@@ -124,7 +127,7 @@ export default function Home() {
         )}
 
         {/* Search Results */}
-        {searchResults.length > 0 && (
+        {hasSearched && searchResults.length > 0 && (
           <div className="max-w-6xl mx-auto">
             <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
               Found {searchResults.length} cards
@@ -163,8 +166,8 @@ export default function Home() {
           </div>
         )}
 
-        {/* Empty State */}
-        {!isLoading && !error && searchQuery && searchResults.length === 0 && (
+        {/* Empty State - Only show after searching */}
+        {hasSearched && !isLoading && !error && searchResults.length === 0 && (
           <div className="max-w-2xl mx-auto text-center">
             <div className="text-gray-500 dark:text-gray-400 text-lg">
               No cards found. Try a different search term.
