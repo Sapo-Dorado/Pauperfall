@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Card from './components/Card';
 import { searchCards, type CardData } from './lib/search';
+import Footer from './components/Footer';
 
 export default function Home() {
   const SEARCH_PLACEHOLDER = "Search for cards (e.g., 'lightning bolt', 'island', 'color:U')";
@@ -132,6 +133,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -218,6 +220,7 @@ export default function Home() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }
