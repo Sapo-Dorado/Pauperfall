@@ -17,19 +17,26 @@ const REQUIRED_TAGS = [
   'legal:pauper',
 ];
 
-async function loadStaplesMap(): Promise<Record<string, number>> {
+type StaplesEntry = {
+  popularityScore: number;
+  decks: number;
+};
+
+const DEFAULT_STAPLES_ENTRY: StaplesEntry = { popularityScore: 0, decks: 0 };
+
+async function loadStaplesMap(): Promise<Record<string, StaplesEntry>> {
   try {
     const res = await fetch('/mtg_pauper_staples.json');
     if (!res.ok) throw new Error(`Failed to load staples json: ${res.status}`);
     const json = await res.json();
 
     if (!json || typeof json !== 'object' || Array.isArray(json)) {
-      throw new Error('Staples JSON must be an object mapping card name to number');
+      throw new Error('Staples JSON must be an object mapping card name to {popularityScore, decks}');
     }
 
-    const map: Record<string, number> = {};
-    for (const [name, value] of Object.entries(json as Record<string, unknown>)) {
-      map[name.toLowerCase()] = Number(value);
+    const map: Record<string, StaplesEntry> = {};
+    for (const [name, value] of Object.entries(json as Record<string, StaplesEntry>)) {
+      map[name.toLowerCase()] = { popularityScore: value.popularityScore, decks: value.decks };
     }
 
     return map;
@@ -91,12 +98,18 @@ export async function searchCards(query: string): Promise<{
 
     const data: SearchResponse = await response.json();
 
-    // Load staples map and sort results by value (desc), default 0 when missing
+    // Load staples map and sort results: popularityScore desc, then decks desc, then name
     const staplesMap = await loadStaplesMap();
     const sorted = [...data.data].sort((a, b) => {
-      const av = staplesMap[a.name.toLowerCase()] ?? 0;
-      const bv = staplesMap[b.name.toLowerCase()] ?? 0;
-      if (bv !== av) return bv - av;
+      const aEntry = staplesMap[a.name.toLowerCase()] ?? DEFAULT_STAPLES_ENTRY;
+      const bEntry = staplesMap[b.name.toLowerCase()] ?? DEFAULT_STAPLES_ENTRY;
+
+      if (bEntry.popularityScore !== aEntry.popularityScore) {
+        return bEntry.popularityScore - aEntry.popularityScore;
+      }
+      if (bEntry.decks !== aEntry.decks) {
+        return bEntry.decks - aEntry.decks;
+      }
       return a.name.localeCompare(b.name);
     });
 
