@@ -2,21 +2,7 @@
 
 import { useState } from 'react';
 import Card from './components/Card';
-
-interface CardData {
-  id: string;
-  name: string;
-  image_uris?: {
-    small: string;
-  };
-  mana_cost?: string;
-  type_line?: string;
-}
-
-interface SearchResponse {
-  data: CardData[];
-  total_cards: number;
-}
+import { searchCards, type CardData } from './lib/search';
 
 export default function Home() {
   const SEARCH_PLACEHOLDER = "Search for cards (e.g., 'lightning bolt', 'island', 'color:U')";
@@ -40,28 +26,19 @@ export default function Home() {
     setError('');
     setHasSearched(true);
 
-    try {
-      const response = await fetch(`https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}`);
-      
-      if (!response.ok) {
-        if (response.status === 404) {
-          setSearchResults([]);
-          setError('No cards found matching your search.');
-        } else {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return;
+    const result = await searchCards(query);
+    
+    if (result.success) {
+      setSearchResults(result.data || []);
+      if (result.error) {
+        setError(result.error);
       }
-
-      const data: SearchResponse = await response.json();
-      setSearchResults(data.data);
-    } catch (err) {
-      console.error('Search error:', err);
-      setError('An error occurred while searching. Please try again.');
+    } else {
+      setError(result.error || 'An error occurred while searching.');
       setSearchResults([]);
-    } finally {
-      setIsLoading(false);
     }
+    
+    setIsLoading(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
