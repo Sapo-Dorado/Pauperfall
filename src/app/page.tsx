@@ -75,22 +75,72 @@ export default function Home() {
     handleSearch(searchQuery);
   };
 
+  // Initial search state (no results yet)
+  if (!hasSearched) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="container mx-auto px-4 h-screen flex flex-col justify-center">
+          {/* Header */}
+          <div className="text-center mb-20">
+            <h1 className="text-7xl font-bold text-gray-800 dark:text-white mb-6">
+              Pauperfall
+            </h1>
+            <p className="text-2xl text-gray-600 dark:text-gray-300">
+              Search Magic: The Gathering cards
+            </p>
+          </div>
+
+          {/* Search Bar */}
+          <div className="w-full px-8 mb-20">
+            <div className="flex gap-6 max-w-5xl mx-auto">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleInputChange}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Search for cards (e.g., 'lightning bolt', 'island', 'creature:goblin')"
+                  className="w-full px-8 py-6 text-2xl border-3 border-gray-300 rounded-full shadow-xl focus:outline-none focus:border-blue-500 focus:ring-6 focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-900"
+                />
+              </div>
+              <button
+                onClick={handleSearchClick}
+                disabled={isLoading || !searchQuery.trim()}
+                className="px-12 py-6 bg-blue-600 text-white font-bold text-xl rounded-full shadow-xl hover:bg-blue-700 focus:outline-none focus:ring-6 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 dark:bg-blue-500 dark:hover:bg-blue-600"
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-3">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                    <span>Searching...</span>
+                  </div>
+                ) : (
+                  'Search'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Search results state
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <div className={`container mx-auto px-4 ${!hasSearched ? 'h-screen flex flex-col justify-center' : 'py-16'}`}>
+      <div className="container mx-auto px-4 py-16">
         {/* Header */}
-        <div className={`text-center ${!hasSearched ? 'mb-20' : 'mb-16'}`}>
-          <h1 className={`font-bold text-gray-800 dark:text-white mb-4 ${!hasSearched ? 'text-7xl' : 'text-5xl'}`}>
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-bold text-gray-800 dark:text-white mb-4">
             Pauperfall
           </h1>
-          <p className={`text-gray-600 dark:text-gray-300 ${!hasSearched ? 'text-2xl' : 'text-xl'}`}>
+          <p className="text-xl text-gray-600 dark:text-gray-300">
             Search Magic: The Gathering cards
           </p>
         </div>
 
         {/* Search Bar */}
-        <div className={`mx-auto ${!hasSearched ? 'w-full px-8 mb-20' : 'max-w-2xl mb-16'}`}>
-          <div className={`flex ${!hasSearched ? 'gap-6 max-w-5xl mx-auto' : 'gap-4'}`}>
+        <div className="max-w-2xl mx-auto mb-16">
+          <div className="flex gap-4">
             <div className="relative flex-1">
               <input
                 type="text"
@@ -98,25 +148,17 @@ export default function Home() {
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
                 placeholder="Search for cards (e.g., 'lightning bolt', 'island', 'creature:goblin')"
-                className={`w-full border-2 border-gray-300 rounded-full shadow-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-900 ${
-                  !hasSearched 
-                    ? 'px-8 py-6 text-2xl border-3 focus:ring-6' 
-                    : 'px-6 py-4 text-lg'
-                }`}
+                className="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-full shadow-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-900"
               />
             </div>
             <button
               onClick={handleSearchClick}
               disabled={isLoading || !searchQuery.trim()}
-              className={`bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 dark:bg-blue-500 dark:hover:bg-blue-600 ${
-                !hasSearched 
-                  ? 'px-12 py-6 text-xl shadow-xl focus:ring-6' 
-                  : 'px-8 py-4'
-              }`}
+              className="px-8 py-4 bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 dark:bg-blue-500 dark:hover:bg-blue-600"
             >
               {isLoading ? (
-                <div className={`flex items-center gap-2 ${!hasSearched ? 'gap-3' : 'gap-2'}`}>
-                  <div className={`animate-spin rounded-full border-b-2 border-white ${!hasSearched ? 'h-6 w-6' : 'h-5 w-5'}`}></div>
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                   <span>Searching...</span>
                 </div>
               ) : (
