@@ -20,6 +20,7 @@ interface SearchResponse {
 
 export default function Home() {
   const SEARCH_PLACEHOLDER = "Search for cards (e.g., 'lightning bolt', 'island', 'color:U')";
+  const SUBTITLE = "Search Magic: The Gathering Pauper cards";
   
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<CardData[]>([]);
@@ -91,11 +92,11 @@ export default function Home() {
         <div className="container mx-auto px-4 h-screen flex flex-col justify-center">
           {/* Header */}
           <div className="text-center mb-20">
-            <h1 className="text-7xl font-bold text-gray-800 dark:text-white mb-6">
+            <h1 className="text-7xl font-bold text-gray-800 dark:text-white mb-6 select-none">
               Pauperfall
             </h1>
-            <p className="text-2xl text-gray-600 dark:text-gray-300">
-              Search Magic: The Gathering cards
+            <p className="text-2xl text-gray-600 dark:text-gray-300 select-none">
+              {SUBTITLE}
             </p>
           </div>
 
@@ -141,12 +142,12 @@ export default function Home() {
         <div className="text-center mb-16">
           <button
             onClick={handleHomeClick}
-            className="text-5xl font-bold text-gray-800 dark:text-white mb-4 cursor-pointer"
+            className="text-5xl font-bold text-gray-800 dark:text-white mb-4 cursor-pointer select-none"
           >
             Pauperfall
           </button>
-          <p className="text-xl text-gray-600 dark:text-gray-300">
-            Search Magic: The Gathering cards
+          <p className="text-xl text-gray-600 dark:text-gray-300 select-none">
+            {SUBTITLE}
           </p>
         </div>
 
