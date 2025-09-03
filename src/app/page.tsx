@@ -92,9 +92,12 @@ export default function Home() {
         <div className="container mx-auto px-4 h-screen flex flex-col justify-center">
           {/* Header */}
           <div className="text-center mb-20">
-            <h1 className="text-7xl font-bold text-gray-800 dark:text-white mb-6 select-none">
-              Pauperfall
-            </h1>
+            <div className="flex items-center justify-center gap-4 mb-6 select-none">
+              <img src="/anglerfish-fish.svg" alt="Pauperfall logo" className="h-16 w-16" />
+              <h1 className="text-7xl font-bold text-gray-800 dark:text-white">
+                Pauperfall
+              </h1>
+            </div>
             <p className="text-2xl text-gray-600 dark:text-gray-300 select-none">
               {SUBTITLE}
             </p>
@@ -146,9 +149,10 @@ export default function Home() {
         <div className="text-center mb-16">
           <button
             onClick={handleHomeClick}
-            className="text-5xl font-bold text-gray-800 dark:text-white mb-4 cursor-pointer select-none"
+            className="text-5xl font-bold text-gray-800 dark:text-white mb-4 cursor-pointer select-none inline-flex items-center gap-3"
           >
-            Pauperfall
+            <img src="/anglerfish-fish.svg" alt="Pauperfall logo" className="h-10 w-10" />
+            <span>Pauperfall</span>
           </button>
           <p className="text-xl text-gray-600 dark:text-gray-300 select-none">
             {SUBTITLE}
