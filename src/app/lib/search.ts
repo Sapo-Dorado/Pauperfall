@@ -17,6 +17,28 @@ const REQUIRED_TAGS = [
   'legal:pauper',
 ];
 
+async function loadStaplesMap(): Promise<Record<string, number>> {
+  try {
+    const res = await fetch('/mtg_pauper_staples.json');
+    if (!res.ok) throw new Error(`Failed to load staples json: ${res.status}`);
+    const json = await res.json();
+
+    if (!json || typeof json !== 'object' || Array.isArray(json)) {
+      throw new Error('Staples JSON must be an object mapping card name to number');
+    }
+
+    const map: Record<string, number> = {};
+    for (const [name, value] of Object.entries(json as Record<string, unknown>)) {
+      map[name.toLowerCase()] = Number(value);
+    }
+
+    return map;
+  } catch (e) {
+    console.error('Error loading staples map:', e);
+    return {};
+  }
+}
+
 /**
  * Builds a search query by adding required tags if they don't already exist
  */
@@ -68,9 +90,19 @@ export async function searchCards(query: string): Promise<{
     }
 
     const data: SearchResponse = await response.json();
+
+    // Load staples map and sort results by value (desc), default 0 when missing
+    const staplesMap = await loadStaplesMap();
+    const sorted = [...data.data].sort((a, b) => {
+      const av = staplesMap[a.name.toLowerCase()] ?? 0;
+      const bv = staplesMap[b.name.toLowerCase()] ?? 0;
+      if (bv !== av) return bv - av;
+      return a.name.localeCompare(b.name);
+    });
+
     return {
       success: true,
-      data: data.data,
+      data: sorted,
     };
   } catch (err) {
     console.error('Search error:', err);
