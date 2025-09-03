@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import Card from './components/Card';
 
-interface Card {
+interface CardData {
   id: string;
   name: string;
   image_uris?: {
@@ -13,13 +14,13 @@ interface Card {
 }
 
 interface SearchResponse {
-  data: Card[];
+  data: CardData[];
   total_cards: number;
 }
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<Card[]>([]);
+  const [searchResults, setSearchResults] = useState<CardData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
@@ -134,33 +135,10 @@ export default function Home() {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {searchResults.map((card) => (
-                <div
+                <Card
                   key={card.id}
-                  className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-                >
-                  {card.image_uris?.small && (
-                    <img
-                      src={card.image_uris.small}
-                      alt={card.name}
-                      className="w-full h-48 object-cover"
-                    />
-                  )}
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-800 dark:text-white text-lg mb-2">
-                      {card.name}
-                    </h3>
-                    {card.mana_cost && (
-                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-1">
-                        Cost: {card.mana_cost}
-                      </p>
-                    )}
-                    {card.type_line && (
-                      <p className="text-gray-600 dark:text-gray-300 text-sm">
-                        {card.type_line}
-                      </p>
-                    )}
-                  </div>
-                </div>
+                  card={card}
+                />
               ))}
             </div>
           </div>
