@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Card from './components/Card';
 import { searchCards, type CardData } from './lib/search';
 import Footer from './components/Footer';
-import Image from 'next/image';
 
-export default function Home() {
+function HomeContent() {
   const SEARCH_PLACEHOLDER = "Search for cards (e.g., 'lightning bolt', 'island', 'color:U')";
   const SUBTITLE = "Search Magic: The Gathering Pauper cards";
   
@@ -21,6 +21,14 @@ export default function Home() {
   const [hasSearched, setHasSearched] = useState(false);
 
   // Check for search query in URL on component mount
+  useEffect(() => {
+    const urlQuery = searchParams.get('q');
+    if (urlQuery) {
+      setSearchQuery(urlQuery);
+      handleSearch(urlQuery);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const handleSearch = async (query: string) => {
     if (!query.trim()) {
@@ -78,16 +86,6 @@ export default function Home() {
     // Clear URL when going home
     router.push('/');
   };
-  
-  useEffect(() => {
-    const urlQuery = searchParams.get('q');
-    if (urlQuery) {
-      setSearchQuery(urlQuery);
-      handleSearch(urlQuery);
-    }
-  }, [searchParams]);
-
-
 
   // Initial search state (no results yet)
   if (!hasSearched) {
@@ -172,7 +170,7 @@ export default function Home() {
                 value={searchQuery}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder={SEARCH_PLACEHOLDER}
+                                  placeholder={SEARCH_PLACEHOLDER}
                 className="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-full shadow-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-900"
               />
             </div>
@@ -230,5 +228,13 @@ export default function Home() {
       </div>
       <Footer />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={null}>
+      <HomeContent />
+    </Suspense>
   );
 }
