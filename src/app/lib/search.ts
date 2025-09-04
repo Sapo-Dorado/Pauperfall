@@ -25,6 +25,12 @@ type StaplesEntry = {
 
 const DEFAULT_STAPLES_ENTRY: StaplesEntry = { popularityScore: 0, decks: 0 };
 
+type EasterEgg = { key: string; value: string };
+// Ordered list; earlier entries take precedence on multiple matches
+const EASTER_EGGS: EasterEgg[] = [
+  { key: 'best card in pauper', value: 'artful dodge' },
+];
+
 async function loadStaplesMap(): Promise<Record<string, StaplesEntry>> {
   try {
     const res = await fetch('/mtg_pauper_staples.json');
@@ -51,6 +57,14 @@ async function loadStaplesMap(): Promise<Record<string, StaplesEntry>> {
  * Builds a search query by adding required tags if they don't already exist
  */
 function buildSearchQuery(userQuery: string): string {
+  // Easter egg override: if any key is present in the query, return its mapped value
+  const lower = userQuery.toLowerCase();
+  for (const egg of EASTER_EGGS) {
+    if (lower.includes(egg.key.toLowerCase())) {
+      return egg.value;
+    }
+  }
+
   const queryParts = [userQuery.trim()];
   
   // Add each required tag if it's not already present
