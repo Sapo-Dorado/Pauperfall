@@ -2,19 +2,19 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import HomeClient from './components/HomeClient';
 
-export function generateMetadata({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }): Metadata {
-	const raw = searchParams.q;
-	const q = Array.isArray(raw) ? raw[0] : raw;
+export async function generateMetadata({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }): Metadata {
+	const {q} = await searchParams;
+	const initialQuery = Array.isArray(q) ? q[0] : q;
 	const baseTitle = 'Pauperfall - Magic: The Gathering Pauper Card Search';
-	if (q && q.trim()) {
-		return { title: `Pauperfall: ${q}` };
+	if (initialQuery && initialQuery.trim()) {
+		return { title: `Pauperfall: ${initialQuery}` };
 	}
 	return { title: baseTitle };
 }
 
-export default function Page({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
-	const raw = searchParams.q;
-	const initialQuery = Array.isArray(raw) ? raw[0] : raw;
+export default async function Page({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+	const {q} = await searchParams;
+	const initialQuery = Array.isArray(q) ? q[0] : q;
 	return (
 		<Suspense fallback={null}>
 			<HomeClient initialQuery={initialQuery} />
