@@ -6,6 +6,7 @@ interface CardData {
   };
   mana_cost?: string;
   type_line?: string;
+  scryfall_uri?: string;
 }
 
 interface CardProps {
@@ -13,9 +14,16 @@ interface CardProps {
 }
 
 export default function Card({ card }: CardProps) {
-  const { id, name, image_uris } = card;
+  const { id, name, image_uris, scryfall_uri } = card;
+  const href = scryfall_uri || `https://scryfall.com/search?q=${encodeURIComponent(name)}`;
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+      title={`View ${name} on Scryfall`}
+    >
       {image_uris?.small && (
         <img
           src={image_uris.small}
@@ -23,6 +31,6 @@ export default function Card({ card }: CardProps) {
           className="w-full aspect-[2.5/3.5] object-cover"
         />
       )}
-    </div>
+    </a>
   );
 }

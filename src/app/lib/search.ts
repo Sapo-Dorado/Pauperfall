@@ -6,6 +6,7 @@ interface CardData {
   };
   mana_cost?: string;
   type_line?: string;
+  scryfall_uri?: string;
 }
 
 interface SearchResponse {
