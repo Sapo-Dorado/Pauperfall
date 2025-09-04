@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Card from './components/Card';
 import { searchCards, type CardData } from './lib/search';
 import Footer from './components/Footer';
+import Image from 'next/image';
 
 export default function Home() {
   const SEARCH_PLACEHOLDER = "Search for cards (e.g., 'lightning bolt', 'island', 'color:U')";
@@ -20,13 +21,6 @@ export default function Home() {
   const [hasSearched, setHasSearched] = useState(false);
 
   // Check for search query in URL on component mount
-  useEffect(() => {
-    const urlQuery = searchParams.get('q');
-    if (urlQuery) {
-      setSearchQuery(urlQuery);
-      handleSearch(urlQuery);
-    }
-  }, [searchParams]);
 
   const handleSearch = async (query: string) => {
     if (!query.trim()) {
@@ -84,6 +78,16 @@ export default function Home() {
     // Clear URL when going home
     router.push('/');
   };
+  
+  useEffect(() => {
+    const urlQuery = searchParams.get('q');
+    if (urlQuery) {
+      setSearchQuery(urlQuery);
+      handleSearch(urlQuery);
+    }
+  }, [searchParams]);
+
+
 
   // Initial search state (no results yet)
   if (!hasSearched) {
@@ -93,7 +97,7 @@ export default function Home() {
           {/* Header */}
           <div className="text-center mb-20">
             <div className="flex items-center justify-center gap-4 mb-6 select-none">
-              <img src="/anglerfish-fish.svg" alt="Pauperfall logo" className="h-16 w-16" />
+              <Image src="/anglerfish-fish.svg" alt="Pauperfall logo" width={64} height={64} className="h-16 w-16" />
               <h1 className="text-7xl font-bold text-gray-800 dark:text-white">
                 Pauperfall
               </h1>
@@ -151,7 +155,7 @@ export default function Home() {
             onClick={handleHomeClick}
             className="text-5xl font-bold text-gray-800 dark:text-white mb-4 cursor-pointer select-none inline-flex items-center gap-3"
           >
-            <img src="/anglerfish-fish.svg" alt="Pauperfall logo" className="h-10 w-10" />
+            <Image src="/anglerfish-fish.svg" alt="Pauperfall logo" width={40} height={40} className="h-10 w-10" />
             <span>Pauperfall</span>
           </button>
           <p className="text-xl text-gray-600 dark:text-gray-300 select-none">
@@ -168,7 +172,7 @@ export default function Home() {
                 value={searchQuery}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                                  placeholder={SEARCH_PLACEHOLDER}
+                placeholder={SEARCH_PLACEHOLDER}
                 className="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-full shadow-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-900"
               />
             </div>

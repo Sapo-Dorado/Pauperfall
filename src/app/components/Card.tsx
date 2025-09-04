@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 interface CardData {
   id: string;
   name: string;
@@ -14,7 +16,7 @@ interface CardProps {
 }
 
 export default function Card({ card }: CardProps) {
-  const { id, name, image_uris, scryfall_uri } = card;
+  const { name, image_uris, scryfall_uri } = card;
   const href = scryfall_uri || `https://scryfall.com/search?q=${encodeURIComponent(name)}`;
   return (
     <a
@@ -25,10 +27,11 @@ export default function Card({ card }: CardProps) {
       title={`View ${name} on Scryfall`}
     >
       {image_uris?.small && (
-        <img
+        <Image
           src={image_uris.small}
           alt={name}
-          className="w-full aspect-[2.5/3.5] object-cover"
+          width={488}
+          height={680}
         />
       )}
     </a>
