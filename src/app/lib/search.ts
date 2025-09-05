@@ -12,6 +12,8 @@ interface CardData {
 interface SearchResponse {
   data: CardData[];
   total_cards: number;
+  has_more?: boolean;
+  next_page?: string;
 }
 
 const REQUIRED_TAGS = [
@@ -80,6 +82,17 @@ function buildSearchQuery(userQuery: string): string {
   return queryParts.join(' ');
 }
 
+async function fetchJson(url: string): Promise<SearchResponse | null> {
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) return null;
+    return (await resp.json()) as SearchResponse;
+  } catch (e) {
+    console.error('Fetch error:', e);
+    return null;
+  }
+}
+
 /**
  * Searches for Magic: The Gathering cards using the Scryfall API
  */
@@ -97,25 +110,46 @@ export async function searchCards(query: string): Promise<{
 
   try {
     const searchQuery = buildSearchQuery(query);
-    const response = await fetch(`https://api.scryfall.com/cards/search?q=${encodeURIComponent(searchQuery)}`);
-    
-    if (!response.ok) {
-      if (response.status === 404) {
-        return {
-          success: true,
-          data: [],
-          error: 'No cards found matching your search.',
-        };
-      } else {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    const firstUrl = `https://api.scryfall.com/cards/search?q=${encodeURIComponent(searchQuery)}`;
+    const first = await fetchJson(firstUrl);
+
+    if (!first) {
+      return {
+        success: false,
+        error: 'Failed to fetch search results.',
+      };
+    }
+
+    // If Scryfall returns HTTP 404 for no results, fetchJson would be null; otherwise continue
+    const allData: CardData[] = [...(first.data || [])];
+
+    const firstCount = first.data?.length || 0;
+    const totalCards = first.total_cards || firstCount;
+
+    // Determine total pages; avoid division by zero
+    const totalPages = firstCount > 0 ? Math.ceil(totalCards / firstCount) : 1;
+
+    // Build requests for pages 2..n using next_page as the template
+    if (totalPages > 1 && first.next_page) {
+      const urls: string[] = [];
+      for (let page = 2; page <= totalPages; page += 1) {
+        const u = new URL(first.next_page);
+        u.searchParams.set('page', String(page));
+        urls.push(u.toString());
+      }
+
+      // Fetch all remaining pages in parallel
+      const pages = await Promise.all(urls.map((u) => fetchJson(u)));
+      for (const res of pages) {
+        if (res && Array.isArray(res.data)) {
+          allData.push(...res.data);
+        }
       }
     }
 
-    const data: SearchResponse = await response.json();
-
     // Load staples map and sort results: popularityScore desc, then decks desc, then name
     const staplesMap = await loadStaplesMap();
-    const sorted = [...data.data].sort((a, b) => {
+    const sorted = allData.sort((a, b) => {
       const aEntry = staplesMap[a.name.toLowerCase()] ?? DEFAULT_STAPLES_ENTRY;
       const bEntry = staplesMap[b.name.toLowerCase()] ?? DEFAULT_STAPLES_ENTRY;
 
