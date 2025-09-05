@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Card from './Card';
 import Footer from './Footer';
@@ -11,6 +11,8 @@ interface HomeClientProps {
 	initialQuery?: string;
 }
 
+const PAGE_SIZE = 175;
+
 export default function HomeClient({ initialQuery }: HomeClientProps) {
 	const SEARCH_PLACEHOLDER = "Search for cards (e.g., 'lightning bolt', 'island', 'color:U')";
 	const SUBTITLE = "Search Magic: The Gathering Pauper cards";
@@ -19,9 +21,12 @@ export default function HomeClient({ initialQuery }: HomeClientProps) {
 
 	const [searchQuery, setSearchQuery] = useState('');
 	const [searchResults, setSearchResults] = useState<CardData[]>([]);
+	const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState('');
 	const [hasSearched, setHasSearched] = useState(false);
+
+	const sentinelRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
 		if (initialQuery && initialQuery.trim()) {
@@ -34,6 +39,7 @@ export default function HomeClient({ initialQuery }: HomeClientProps) {
 	const handleSearch = async (query: string) => {
 		if (!query.trim()) {
 			setSearchResults([]);
+			setVisibleCount(PAGE_SIZE);
 			setError('');
 			setHasSearched(false);
 			router.push('/');
@@ -50,11 +56,14 @@ export default function HomeClient({ initialQuery }: HomeClientProps) {
 
 		const result = await searchCards(query);
 		if (result.success) {
-			setSearchResults(result.data || []);
+			const data = result.data || [];
+			setSearchResults(data);
+			setVisibleCount(Math.min(PAGE_SIZE, data.length));
 			if (result.error) setError(result.error);
 		} else {
 			setError(result.error || 'An error occurred while searching.');
 			setSearchResults([]);
+			setVisibleCount(PAGE_SIZE);
 		}
 		setIsLoading(false);
 	};
@@ -74,10 +83,28 @@ export default function HomeClient({ initialQuery }: HomeClientProps) {
 	const handleHomeClick = () => {
 		setSearchQuery('');
 		setSearchResults([]);
+		setVisibleCount(PAGE_SIZE);
 		setError('');
 		setHasSearched(false);
 		router.push('/');
 	};
+
+	// Infinite scroll observer
+	useEffect(() => {
+		if (!sentinelRef.current) return;
+		const el = sentinelRef.current;
+		const observer = new IntersectionObserver((entries) => {
+			const [entry] = entries;
+			if (entry.isIntersecting) {
+				setVisibleCount((prev) => {
+					if (prev >= searchResults.length) return prev;
+					return Math.min(prev + PAGE_SIZE, searchResults.length);
+				});
+			}
+		}, { rootMargin: '200px' });
+		observer.observe(el);
+		return () => observer.disconnect();
+	}, [searchResults.length]);
 
 	if (!hasSearched) {
 		return (
@@ -168,30 +195,28 @@ export default function HomeClient({ initialQuery }: HomeClientProps) {
 					</div>
 				</div>
 
-				{error && (
-					<div className="max-w-2xl mx-auto mb-8">
-						<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg dark:bg-red-900 dark:border-red-700 dark:text-red-200">
-							{error}
+				{/* Results */}
+				<div className="max-w-6xl mx-auto">
+					{searchResults.length > 0 && (
+						<>
+							<h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">Found {searchResults.length} cards</h2>
+							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+								{searchResults.slice(0, visibleCount).map((card) => (
+									<Card key={card.id} card={card} />
+								))}
+							</div>
+							<div ref={sentinelRef} className="h-10" />
+							{visibleCount < searchResults.length && (
+								<div className="mt-6 text-center text-gray-500 dark:text-gray-400">Loading more…</div>
+							)}
+						</>
+					)}
+					{error && (
+						<div className="max-w-2xl mx-auto mb-8">
+							<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg dark:bg-red-900 dark:border-red-700 dark:text-red-200">{error}</div>
 						</div>
-					</div>
-				)}
-
-				{hasSearched && searchResults.length > 0 && (
-					<div className="max-w-6xl mx-auto">
-						<h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">Found {searchResults.length} cards</h2>
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-							{searchResults.map((card) => (
-								<Card key={card.id} card={card} />
-							))}
-						</div>
-					</div>
-				)}
-
-				{hasSearched && !isLoading && !error && searchResults.length === 0 && (
-					<div className="max-w-2xl mx-auto text-center">
-						<div className="text-gray-500 dark:text-gray-400 text-lg">No cards found. Try a different search term.</div>
-					</div>
-				)}
+					)}
+				</div>
 			</div>
 			<Footer />
 		</div>
