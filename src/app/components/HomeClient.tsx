@@ -11,7 +11,7 @@ interface HomeClientProps {
 	initialQuery?: string;
 }
 
-const PAGE_SIZE = 175;
+const PAGE_SIZE = 176;
 
 export default function HomeClient({ initialQuery }: HomeClientProps) {
 	const SEARCH_PLACEHOLDER = "Search for cards (e.g., 'lightning bolt', 'island', 'color:U')";

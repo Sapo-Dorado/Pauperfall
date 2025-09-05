@@ -146,6 +146,7 @@ export async function searchCards(query: string): Promise<{
         }
       }
     }
+    console.log(allData[0])
 
     // Load staples map and sort results: popularityScore desc, then decks desc, then name
     const staplesMap = await loadStaplesMap();
