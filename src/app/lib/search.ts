@@ -116,7 +116,7 @@ export async function searchCards(query: string): Promise<{
     if (!first) {
       return {
         success: false,
-        error: 'Failed to fetch search results.',
+        error: 'No results found.',
       };
     }
 
