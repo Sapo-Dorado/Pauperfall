@@ -118,8 +118,8 @@ export default function HomeClient({ initialQuery }: HomeClientProps) {
 						<p className="text-2xl text-gray-600 dark:text-gray-300 select-none">{SUBTITLE}</p>
 					</div>
 
-					<div className="w-full px-8 mb-20">
-						<div className="flex gap-6 max-w-5xl mx-auto">
+					<div className="w-full px-4 sm:px-8 mb-20">
+						<div className="flex gap-3 sm:gap-6 max-w-5xl mx-auto">
 							<div className="relative flex-1">
 								<input
 									type="text"
@@ -127,18 +127,18 @@ export default function HomeClient({ initialQuery }: HomeClientProps) {
 									onChange={handleInputChange}
 									onKeyDown={handleKeyDown}
 									placeholder={SEARCH_PLACEHOLDER}
-									className="w-full px-8 py-6 text-2xl border-3 border-gray-300 rounded-full shadow-xl focus:outline-none focus:border-blue-500 focus:ring-6 focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-900"
+									className="w-full px-4 py-3 sm:px-8 sm:py-6 text-lg sm:text-2xl border-2 sm:border-3 border-gray-300 rounded-full shadow-xl focus:outline-none focus:border-blue-500 focus:ring-4 sm:focus:ring-6 focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-900"
 								/>
 							</div>
 							<button
 								onClick={handleSearchClick}
 								disabled={isLoading || !searchQuery.trim()}
-								className="px-12 py-6 bg-blue-600 text-white font-bold text-xl rounded-full shadow-xl hover:bg-blue-700 focus:outline-none focus:ring-6 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 dark:bg-blue-500 dark:hover:bg-blue-600"
+								className="px-6 py-3 sm:px-12 sm:py-6 bg-blue-600 text-white font-bold text-base sm:text-xl rounded-full shadow-xl hover:bg-blue-700 focus:outline-none focus:ring-4 sm:focus:ring-6 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 dark:bg-blue-500 dark:hover:bg-blue-600"
 							>
 								{isLoading ? (
-									<div className="flex items-center gap-3">
-										<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
-										<span>Searching...</span>
+									<div className="flex items-center gap-2 sm:gap-3">
+										<div className="animate-spin rounded-full h-4 w-4 sm:h-6 sm:w-6 border-b-2 border-white"></div>
+										<span className="hidden sm:inline">Searching...</span>
 									</div>
 								) : (
 									'Search'
@@ -167,7 +167,7 @@ export default function HomeClient({ initialQuery }: HomeClientProps) {
 				</div>
 
 				<div className="max-w-2xl mx-auto mb-16">
-					<div className="flex gap-4">
+					<div className="flex gap-2 sm:gap-4">
 						<div className="relative flex-1">
 							<input
 								type="text"
@@ -175,18 +175,18 @@ export default function HomeClient({ initialQuery }: HomeClientProps) {
 								onChange={handleInputChange}
 								onKeyDown={handleKeyDown}
 								placeholder={SEARCH_PLACEHOLDER}
-								className="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-full shadow-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-900"
+								className="w-full px-4 py-3 sm:px-6 sm:py-4 text-base sm:text-lg border-2 border-gray-300 rounded-full shadow-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-900"
 							/>
 						</div>
 						<button
 							onClick={handleSearchClick}
 							disabled={isLoading || !searchQuery.trim()}
-							className="px-8 py-4 bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 dark:bg-blue-500 dark:hover:bg-blue-600"
+							className="px-4 py-3 sm:px-8 sm:py-4 bg-blue-600 text-white font-semibold text-sm sm:text-base rounded-full shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 dark:bg-blue-500 dark:hover:bg-blue-600"
 						>
 							{isLoading ? (
-								<div className="flex items-center gap-2">
-									<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-									<span>Searching...</span>
+								<div className="flex items-center gap-1 sm:gap-2">
+									<div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-white"></div>
+									<span className="hidden sm:inline">Searching...</span>
 								</div>
 							) : (
 								'Search'
