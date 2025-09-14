@@ -111,11 +111,11 @@ export default function HomeClient({ initialQuery }: HomeClientProps) {
 			<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
 				<div className="container mx-auto px-4 h-screen flex flex-col justify-center">
 					<div className="text-center mb-20">
-						<div className="flex items-center justify-center gap-4 mb-6 select-none">
-							<Image src="/anglerfish-fish.svg" alt="Pauperfall logo" width={64} height={64} className="h-16 w-16" />
-							<h1 className="text-7xl font-bold text-gray-800 dark:text-white">Pauperfall</h1>
+						<div className="flex items-center justify-center gap-2 sm:gap-4 mb-6 select-none">
+							<Image src="/anglerfish-fish.svg" alt="Pauperfall logo" width={64} height={64} className="h-12 w-12 sm:h-16 sm:w-16" />
+							<h1 className="text-4xl sm:text-7xl font-bold text-gray-800 dark:text-white">Pauperfall</h1>
 						</div>
-						<p className="text-2xl text-gray-600 dark:text-gray-300 select-none">{SUBTITLE}</p>
+						<p className="text-lg sm:text-2xl text-gray-600 dark:text-gray-300 select-none">{SUBTITLE}</p>
 					</div>
 
 					<div className="w-full px-4 sm:px-8 mb-20">
@@ -159,11 +159,11 @@ export default function HomeClient({ initialQuery }: HomeClientProps) {
 		<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
 			<div className="container mx-auto px-4 py-16">
 				<div className="text-center mb-16">
-					<button onClick={handleHomeClick} className="text-5xl font-bold text-gray-800 dark:text-white mb-4 cursor-pointer select-none inline-flex items-center gap-3">
-						<Image src="/anglerfish-fish.svg" alt="Pauperfall logo" width={40} height={40} className="h-10 w-10" />
+					<button onClick={handleHomeClick} className="text-3xl sm:text-5xl font-bold text-gray-800 dark:text-white mb-4 cursor-pointer select-none inline-flex items-center gap-2 sm:gap-3">
+						<Image src="/anglerfish-fish.svg" alt="Pauperfall logo" width={40} height={40} className="h-8 w-8 sm:h-10 sm:w-10" />
 						<span>Pauperfall</span>
 					</button>
-					<p className="text-xl text-gray-600 dark:text-gray-300 select-none">{SUBTITLE}</p>
+					<p className="text-base sm:text-xl text-gray-600 dark:text-gray-300 select-none">{SUBTITLE}</p>
 				</div>
 
 				<div className="max-w-2xl mx-auto mb-16">
