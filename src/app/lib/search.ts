@@ -40,20 +40,28 @@ interface SearchResponse {
  * Normalizes card data from Scryfall API to ensure all cards use card_faces array
  */
 function normalizeCardData(scryfallCard: ScryfallCardData): CardData {
-  // If card already has card_faces, use it as-is
-  if (scryfallCard.card_faces && scryfallCard.card_faces.length > 0) {
+  const baseName = scryfallCard.card_faces?.[0]?.name ?? scryfallCard.name;
+
+  // If card has card_faces where each face has its own image_uris, it's truly double-faced
+  if (
+    scryfallCard.card_faces &&
+    scryfallCard.card_faces.length > 0 &&
+    scryfallCard.card_faces.every((f) => f.image_uris)
+  ) {
     return {
       ...scryfallCard,
+      name: baseName,
       card_faces: scryfallCard.card_faces,
     };
   }
 
-  // Otherwise, create a single-entry card_faces array from top-level image_uris
+  // Adventure cards and others with a single top-level image_uris
   return {
     ...scryfallCard,
+    name: baseName,
     card_faces: [
       {
-        name: scryfallCard.name,
+        name: baseName,
         image_uris: scryfallCard.image_uris,
       },
     ],
@@ -198,12 +206,8 @@ export async function searchCards(query: string): Promise<{
     // Load staples map and sort results: popularityScore desc, then decks desc, then name
     const staplesMap = await loadStaplesMap();
     const sorted = normalized.sort((a, b) => {
-      // For double-faced cards, use the first face's name for popularity lookup
-      const aLookupName = a.card_faces.length > 1 ? a.card_faces[0].name : a.name;
-      const bLookupName = b.card_faces.length > 1 ? b.card_faces[0].name : b.name;
-
-      const aEntry = staplesMap[aLookupName.toLowerCase()] ?? DEFAULT_STAPLES_ENTRY;
-      const bEntry = staplesMap[bLookupName.toLowerCase()] ?? DEFAULT_STAPLES_ENTRY;
+      const aEntry = staplesMap[a.name.toLowerCase()] ?? DEFAULT_STAPLES_ENTRY;
+      const bEntry = staplesMap[b.name.toLowerCase()] ?? DEFAULT_STAPLES_ENTRY;
 
       if (bEntry.popularityScore !== aEntry.popularityScore) {
         return bEntry.popularityScore - aEntry.popularityScore;
