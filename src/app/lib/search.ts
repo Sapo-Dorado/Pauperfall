@@ -165,7 +165,7 @@ export async function searchCards(query: string): Promise<{
     }
 
     // If Scryfall returns HTTP 404 for no results, fetchJson would be null; otherwise continue
-    const allData: CardData[] = [...(first.data || [])];
+    const allData: ScryfallCardData[] = [...(first.data || [])];
 
     const firstCount = first.data?.length || 0;
     const totalCards = first.total_cards || firstCount;
